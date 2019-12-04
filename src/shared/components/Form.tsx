@@ -16,7 +16,7 @@ export interface FormResult {
 
 export interface FormProps extends ThemePropBase {
   formFields: Array<FormField>;
-  handleOnPress: (form: FormResult) => any;
+  handleOnChange: (form: FormResult) => any;
 }
 
 const style = ({ colors }: Theme) => StyleSheet.create({
@@ -45,9 +45,12 @@ class Form extends React.Component<FormProps> {
   static defaultProps = { formStructure: [] };
   state = {};
 
-  handleOnPress = () => {
-    this.props.handleOnPress(this.state);
-  };
+  private handleOnChangeText(formField: FormField): ((text: string) => void) & Function {
+    return (value: string) => {
+      this.setState({ [formField.fieldName]: value })
+      this.props.handleOnChange(this.state);
+    };
+  }
 
   render() {
     const styles = style(this.props.theme);
@@ -61,14 +64,14 @@ class Form extends React.Component<FormProps> {
             theme={theme.textInput}
             value={this.state[formField.fieldName] || formField.defaultValue}
             secureTextEntry={formField.secureTextEntry}
-            onChangeText={(value: string) => this.setState({ [formField.fieldName]: value })}
+            onChangeText={this.handleOnChangeText(formField)}
           />
         ))}
 
-        <FAB
+        {/* <FAB
           style={styles.fab}
           icon="check"
-          onPress={this.handleOnPress} />
+          onPress={this.handleOnPress} /> */}
       </>
     );
   }

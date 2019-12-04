@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { withTheme, Theme } from 'react-native-paper';
+import { StyleSheet, View, Image } from 'react-native';
+import { withTheme, Theme, Text } from 'react-native-paper';
 import { NavigationPropBase, ThemePropBase } from '../../shared/base/types';
 import Form, { FormField, FormResult } from '../../shared/components/Form';
+import { NavigationStackOptions } from 'react-navigation-stack';
 
 interface RegisterProps extends NavigationPropBase, ThemePropBase { }
 
@@ -20,8 +21,10 @@ const style = ({ colors }: Theme) => StyleSheet.create({
 });
 
 class Register extends React.Component<RegisterProps, RegisterState> {
-  static navigationOptions = {
-    title: 'Register'
+  static navigationOptions: NavigationStackOptions = {
+    title: 'Register',
+    headerTitle: ()=> <Text>Texto</Text>
+  
   }
 
   state = {
@@ -43,9 +46,8 @@ class Register extends React.Component<RegisterProps, RegisterState> {
     }]
   };
 
-  handleOnPress = (result: FormResult) => {
-    console.log('result: ', result);
-    this.props.navigation.goBack();
+  handleOnChange = (result: FormResult) => {
+    console.log('change: ', result);
   }
 
   render() {
@@ -54,7 +56,7 @@ class Register extends React.Component<RegisterProps, RegisterState> {
       <View style={container}>
         <Form
           formFields={this.state.formFields}
-          handleOnPress={this.handleOnPress}
+          handleOnChange={this.handleOnChange}
           theme={this.props.theme}
         />
       </View>

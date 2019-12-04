@@ -2,17 +2,14 @@ import { createStackNavigator } from "react-navigation-stack";
 import AuthScreen from "./Auth";
 import RegisterScreen from "./Auth";
 import { theme } from "../../shared/theme";
+import Profile from "./Profile";
 
 export const AuthStack = createStackNavigator({
   Home: AuthScreen,
-  Register: RegisterScreen
+  Register: RegisterScreen,
+  Profile: Profile
 }, {
-  defaultNavigationOptions: {
-    headerStyle: {
-      backgroundColor: theme.colors.primary,
-    },
-    headerTintColor: '#fff',
-  }
+  headerMode: "none"
 });
 
 AuthStack.navigationOptions = () => {
