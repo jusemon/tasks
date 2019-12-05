@@ -3,9 +3,9 @@ import { View, StyleSheet } from "react-native";
 import { withTheme, Theme, FAB } from "react-native-paper";
 
 import Form, { FormField } from "../../shared/components/Form";
-import { Team } from "./Teams";
 import { ThemePropBase, NavigationPropBase } from "../../shared/base/types";
 import firebaseApp from "../../shared/firebase";
+import { Team } from "./model";
 
 interface TeamFormState {
   formFields: Array<FormField>;
@@ -40,7 +40,10 @@ export class TeamForm extends React.Component<TeamFormProps, TeamFormState> {
       secureTextEntry: false,
       defaultValue: this.props.navigation.getParam('description', '')
     }],
-    result: null
+    result: {
+      name: this.props.navigation.getParam('name', ''),
+      description: this.props.navigation.getParam('description', '')
+    }
   };
 
   handleOnChange = (result: any) => {
@@ -49,6 +52,7 @@ export class TeamForm extends React.Component<TeamFormProps, TeamFormState> {
 
   handleOnPress = () => {
     const id = this.props.navigation.getParam('id', null);
+    console.log(this.state.result);
     if (id !== null) {
       firebaseApp.database().ref(`teams/${id}`).update(this.state.result);
     } else {
