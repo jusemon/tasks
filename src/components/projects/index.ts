@@ -3,9 +3,11 @@ import { createStackNavigator } from "react-navigation-stack";
 import { theme } from "../../shared/theme";
 import ProjectsScreen from "./Projects";
 import ProfileScreen from "../profile";
+import ProjectForm from "./ProjectForm";
 
 export const ProjectsStack = createStackNavigator({
   Home: ProjectsScreen,
+  ProjectForm: ProjectForm,
   Profile: ProfileScreen
 }, {
   defaultNavigationOptions: {
