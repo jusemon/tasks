@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Image, AsyncStorage } from 'react-native';
 import { withTheme, Button, Theme } from 'react-native-paper';
 import { NavigationPropBase, ThemePropBase } from '../../shared/base/types';
-import Form, { FormField, FormResult } from '../../shared/components/Form';
+import Form, { FormField, FormResult, FormFieldType } from '../../shared/components/Form';
 import Constants from "expo-constants";
 import firebaseApp from '../../shared/firebase';
 
@@ -49,11 +49,13 @@ class Auth extends React.Component<AuthProps, AuthState> {
     formFields: [{
       fieldName: 'email',
       label: 'Email',
+      type: FormFieldType.Text,
       secureTextEntry: false,
       defaultValue: ''
     }, {
       fieldName: 'password',
       label: 'Password',
+      type: FormFieldType.Text,
       secureTextEntry: true,
       defaultValue: ''
     }]

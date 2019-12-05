@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { withTheme, Theme, FAB } from "react-native-paper";
 
-import Form, { FormField } from "../../shared/components/Form";
+import Form, { FormField, FormFieldType } from "../../shared/components/Form";
 import { ThemePropBase, NavigationPropBase } from "../../shared/base/types";
 import firebaseApp from "../../shared/firebase";
 import { Task } from "./model";
@@ -32,6 +32,7 @@ export class TaskForm extends React.Component<TaskFormProps, TaskFormState> {
     formFields: [{
       fieldName: 'name',
       label: 'Name',
+      type: FormFieldType.Text,
       secureTextEntry: false,
       defaultValue: this.props.navigation.getParam('name', '')
     }],

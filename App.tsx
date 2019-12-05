@@ -13,6 +13,8 @@ import AuthStack from './src/components/auth';
 import AuthLoadingScreen from './src/components/auth/AuthLoading';
 import firebaseApp from './src/shared/firebase';
 import { getActiveRouteName } from './src/shared/navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import Select from './src/shared/components/Select';
 
 const AppBottomTab = createMaterialBottomTabNavigator(
   {
@@ -41,12 +43,23 @@ const AppBottomTab = createMaterialBottomTabNavigator(
 )
 
 const AppContainer = createAppContainer(
-  createSwitchNavigator({
-    AuthLoading: AuthLoadingScreen,
-    App: AppBottomTab,
-    Auth: AuthStack
-  }, {
-    initialRouteName: 'AuthLoading',
+  createStackNavigator({
+    Main: {
+      screen: createSwitchNavigator({
+        AuthLoading: AuthLoadingScreen,
+        App: AppBottomTab,
+        Auth: AuthStack
+      }, {
+        initialRouteName: 'AuthLoading',
+      })
+    },
+    Select: {
+      screen: Select
+    }
+  },
+  {
+    mode: "modal",
+    headerMode: "none"
   })
 );
 
@@ -56,10 +69,11 @@ export default class App extends React.Component {
   unsubscribe: firebase.Unsubscribe;
   componentWillMount() {
     this.unsubscribe = firebaseApp.auth().onAuthStateChanged((user) => {
+      console.log('current route:', this.currentRouteName);
       if (user == null) {
         this.navigator.dispatch(NavigationActions.navigate({ routeName: 'Auth' }));
       } else {
-        if (this.currentRouteName.indexOf('Auth/') > -1) {
+        if (this.currentRouteName.indexOf('Main/Auth/') > -1) {
           this.navigator.dispatch(NavigationActions.navigate({ routeName: 'Teams' }));
         }
       }

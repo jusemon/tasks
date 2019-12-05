@@ -13,6 +13,7 @@ export default class ProjectItem extends React.Component<ProjectItemProps> {
     return (
       <Card style={{ margin: 10, marginBottom: 0 }}>
         <Card.Content>
+          <Paragraph>{this.props.project.team.label}</Paragraph>
           <Title>{this.props.project.name}</Title>
           <Paragraph>{this.props.project.description}</Paragraph>
         </Card.Content>

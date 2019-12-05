@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import { withTheme, Theme, Text } from 'react-native-paper';
 import { NavigationPropBase, ThemePropBase } from '../../shared/base/types';
-import Form, { FormField, FormResult } from '../../shared/components/Form';
+import Form, { FormField, FormResult, FormFieldType } from '../../shared/components/Form';
 import { NavigationStackOptions } from 'react-navigation-stack';
 
 interface RegisterProps extends NavigationPropBase, ThemePropBase { }
@@ -31,16 +31,19 @@ class Register extends React.Component<RegisterProps, RegisterState> {
     formFields: [{
       fieldName: 'email',
       label: 'Email',
+      type: FormFieldType.Text,
       secureTextEntry: false,
       defaultValue: ''
     }, {
       fieldName: 'name',
       label: 'Name',
+      type: FormFieldType.Text,
       secureTextEntry: false,
       defaultValue: ''
     }, {
       fieldName: 'password',
       label: 'Password',
+      type: FormFieldType.Text,
       secureTextEntry: true,
       defaultValue: ''
     }]
