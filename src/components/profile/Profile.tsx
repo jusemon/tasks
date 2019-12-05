@@ -6,9 +6,7 @@ import { View, StyleSheet } from "react-native";
 
 export class ProfileButton extends React.Component<NavigationPropBase> {
 
-  private handleOnPress = () => {
-    console.log('Handle on press', this.props.navigation.navigate('Profile'));
-  }
+  private handleOnPress = () => this.props.navigation.navigate('Profile');
 
   render() {
     return (

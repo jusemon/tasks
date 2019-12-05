@@ -62,18 +62,16 @@ class Auth extends React.Component<AuthProps, AuthState> {
 
   private handleOnChange = (result: FormResult) => {
     this.result = {...result as any};
-    console.log('result', this.result)
   }
 
   private onLogin = async () => {
     try {
-      console.log(this.result.email, this.result.password);
       const { user } = await firebaseApp.auth().signInWithEmailAndPassword(this.result.email, this.result.password);
       const token = await user.getIdToken();
       await AsyncStorage.setItem('userToken', token);
       this.props.navigation.navigate('App');
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

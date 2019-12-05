@@ -5,13 +5,13 @@ import { withTheme, Theme, FAB } from "react-native-paper";
 import Form, { FormField } from "../../shared/components/Form";
 import { ThemePropBase, NavigationPropBase } from "../../shared/base/types";
 import firebaseApp from "../../shared/firebase";
-import { Team } from "./model";
+import { Task } from "./model";
 
-interface TeamFormState {
+interface TaskFormState {
   formFields: Array<FormField>;
-  result: Team;
+  result: Task;
 }
-interface TeamFormProps extends ThemePropBase, NavigationPropBase { }
+interface TaskFormProps extends ThemePropBase, NavigationPropBase { }
 
 const style = ({ colors }: Theme) => StyleSheet.create({
   container: {
@@ -27,22 +27,16 @@ const style = ({ colors }: Theme) => StyleSheet.create({
   }
 });
 
-export class TeamForm extends React.Component<TeamFormProps, TeamFormState> {
+export class TaskForm extends React.Component<TaskFormProps, TaskFormState> {
   state = {
     formFields: [{
       fieldName: 'name',
       label: 'Name',
       secureTextEntry: false,
       defaultValue: this.props.navigation.getParam('name', '')
-    }, {
-      fieldName: 'description',
-      label: 'Description',
-      secureTextEntry: false,
-      defaultValue: this.props.navigation.getParam('description', '')
     }],
     result: {
-      name: this.props.navigation.getParam('name', ''),
-      description: this.props.navigation.getParam('description', '')
+      name: this.props.navigation.getParam('name', '')
     }
   };
 
@@ -53,9 +47,9 @@ export class TeamForm extends React.Component<TeamFormProps, TeamFormState> {
   handleOnPress = () => {
     const id = this.props.navigation.getParam('id', null);
     if (id !== null) {
-      firebaseApp.database().ref(`teams/${id}`).update(this.state.result);
+      firebaseApp.database().ref(`tasks/${id}`).update(this.state.result);
     } else {
-      firebaseApp.database().ref('teams').push(this.state.result);
+      firebaseApp.database().ref('tasks').push(this.state.result);
     }
     this.props.navigation.goBack();
   }
@@ -78,4 +72,4 @@ export class TeamForm extends React.Component<TeamFormProps, TeamFormState> {
   }
 }
 
-export default withTheme(TeamForm);
+export default withTheme(TaskForm);

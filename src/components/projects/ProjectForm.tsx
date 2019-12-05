@@ -52,7 +52,6 @@ export class ProjectForm extends React.Component<ProjectFormProps, ProjectFormSt
 
   handleOnPress = () => {
     const id = this.props.navigation.getParam('id', null);
-    console.log(this.state.result);
     if (id !== null) {
       firebaseApp.database().ref(`projects/${id}`).update(this.state.result);
     } else {
