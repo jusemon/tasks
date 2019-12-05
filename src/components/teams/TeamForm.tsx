@@ -28,29 +28,20 @@ const style = ({ colors }: Theme) => StyleSheet.create({
 });
 
 export class TeamForm extends React.Component<TeamFormProps, TeamFormState> {
-  constructor(props: TeamFormProps) {
-    super(props);
-    const id = this.props.navigation.getParam('id', null);
-    let name = '', description = '';
-    if (id !== null) {
-      name = this.props.navigation.getParam('name');
-      description = this.props.navigation.getParam('description');
-    }
-    this.state = {
-      formFields: [{
-        fieldName: 'name',
-        label: 'Name',
-        secureTextEntry: false,
-        defaultValue: name
-      }, {
-        fieldName: 'description',
-        label: 'Description',
-        secureTextEntry: false,
-        defaultValue: description
-      }],
-      result: null
-    };  
-  }
+  state = {
+    formFields: [{
+      fieldName: 'name',
+      label: 'Name',
+      secureTextEntry: false,
+      defaultValue: this.props.navigation.getParam('name', '')
+    }, {
+      fieldName: 'description',
+      label: 'Description',
+      secureTextEntry: false,
+      defaultValue: this.props.navigation.getParam('description', '')
+    }],
+    result: null
+  };
 
   handleOnChange = (result: any) => {
     this.setState({ result: result })

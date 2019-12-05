@@ -43,7 +43,10 @@ const theme = {
 
 class Form extends React.Component<FormProps> {
   static defaultProps = { formFields: [] };
-  state = {};
+  constructor(props: FormProps) {
+    super(props);
+    this.state = this.props.formFields.reduce((output, input) => ({ ...output, [input.fieldName]: input.defaultValue }), {});
+  }
 
   private handleOnChangeText(formField: FormField): ((text: string) => void) & Function {
     return (value: string) => {
@@ -63,7 +66,7 @@ class Form extends React.Component<FormProps> {
             label={formField.label}
             style={styles.textInput}
             theme={theme.textInput}
-            value={this.state[formField.fieldName] || formField.defaultValue}
+            value={this.state[formField.fieldName]}
             secureTextEntry={formField.secureTextEntry}
             onChangeText={this.handleOnChangeText(formField)}
           />
