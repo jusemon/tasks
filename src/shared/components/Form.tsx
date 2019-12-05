@@ -42,7 +42,7 @@ const theme = {
 }
 
 class Form extends React.Component<FormProps> {
-  static defaultProps = { formStructure: [] };
+  static defaultProps = { formFields: [] };
   state = {};
 
   private handleOnChangeText(formField: FormField): ((text: string) => void) & Function {

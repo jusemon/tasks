@@ -4,5 +4,4 @@ import firebaseConfig from "./apikey.json";
 
 export const firebaseApp = firebase.initializeApp(firebaseConfig);
 
-export const { auth, database } = firebaseApp;
 export default firebaseApp;

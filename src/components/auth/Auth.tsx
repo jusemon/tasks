@@ -4,7 +4,7 @@ import { withTheme, Button, Theme } from 'react-native-paper';
 import { NavigationPropBase, ThemePropBase } from '../../shared/base/types';
 import Form, { FormField, FormResult } from '../../shared/components/Form';
 import Constants from "expo-constants";
-import firebaseApp, { auth } from '../../shared/firebase';
+import firebaseApp from '../../shared/firebase';
 
 interface AuthProps extends NavigationPropBase, ThemePropBase { }
 
