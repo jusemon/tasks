@@ -85,7 +85,7 @@ export class TeamsList extends React.Component<TeamsListProps, TeamsListState> {
     this.onValueChange.off()
   }
 
-  private onEdit = (id: string) => this.props.navigation.navigate('TeamForm', { id });
+  private onEdit = (id: string) => this.props.navigation.navigate('TeamForm', { ...this.state.teams.find(team=> team.id === id) });
 
   private onDelete = () => {
     firebaseApp.database().ref(`teams/${this.state.id}`).remove();
@@ -138,7 +138,7 @@ export class Teams extends React.Component<TeamsProps> {
       title: 'Teams',
       headerLeft: () => <ProfileButton navigation={navigation} />,
       headerRight: () => <Button onPress={() => {
-        console.log('On Press', navigation.navigate('TeamForm'));
+        navigation.navigate('TeamForm');
       }}><IconComponent name='add' size={25} color='white' /></Button>
     }
   }

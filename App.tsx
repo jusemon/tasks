@@ -1,7 +1,7 @@
 import React from 'react';
-import { createAppContainer, createSwitchNavigator, NavigationContainerComponent } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator, NavigationContainerComponent, NavigationActions } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { Provider as PaperProvider } from 'react-native-paper';
 
 import './src/shared/firebase/timeout';
@@ -12,8 +12,7 @@ import TasksStack from './src/components/tasks';
 import AuthStack from './src/components/auth';
 import AuthLoadingScreen from './src/components/auth/AuthLoading';
 import firebaseApp from './src/shared/firebase';
-import { NavigationStackScreenProps } from 'react-navigation-stack';
-import { NavigationPropBase } from './src/shared/base/types';
+import { getActiveRouteName } from './src/shared/navigation';
 
 const AppBottomTab = createMaterialBottomTabNavigator(
   {
@@ -28,7 +27,7 @@ const AppBottomTab = createMaterialBottomTabNavigator(
         const IconComponent = MaterialIcons;
         switch (routeName) {
           case 'Teams':
-            return <IconComponent name='people' size={25} color={tintColor} />
+            return <FontAwesome5 name='people-carry' size={20} color={tintColor} />
           case 'Projects':
             return <IconComponent name='assessment' size={25} color={tintColor} />
           case 'Tasks':
@@ -53,20 +52,32 @@ const AppContainer = createAppContainer(
 
 export default class App extends React.Component {
   navigator: NavigationContainerComponent;
+  currentRouteName: string;
+  unsubscribe: firebase.Unsubscribe;
   componentWillMount() {
-    firebaseApp.auth().onAuthStateChanged((user)=> {
+    this.unsubscribe = firebaseApp.auth().onAuthStateChanged((user) => {
       if (user == null) {
-        console.log(this.navigator.props.navigation.state);
-        // this.props.navigation.navigate('Auth');
+        this.navigator.dispatch(NavigationActions.navigate({ routeName: 'Auth' }));
+      } else {
+        if (this.currentRouteName.indexOf('Auth/') > -1) {
+          this.navigator.dispatch(NavigationActions.navigate({ routeName: 'Teams' }));
+        }
       }
-    })
+    });
+  }
+  componentWillUnmount() {
+    this.unsubscribe();
   }
   render() {
     return (
       <PaperProvider theme={theme}>
-        <AppContainer ref={nav => {
-          this.navigator = nav;
-        }} />
+        <AppContainer
+          onNavigationStateChange={(prevState, currentState, action) => {
+            this.currentRouteName = getActiveRouteName(currentState);
+          }}
+          ref={nav => {
+            this.navigator = nav;
+          }} />
       </PaperProvider>
     );
   }

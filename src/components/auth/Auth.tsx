@@ -61,7 +61,8 @@ class Auth extends React.Component<AuthProps, AuthState> {
   result: LoginForm;
 
   private handleOnChange = (result: FormResult) => {
-    this.result = result as any;
+    this.result = {...result as any};
+    console.log('result', this.result)
   }
 
   private onLogin = async () => {

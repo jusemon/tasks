@@ -47,8 +47,9 @@ class Form extends React.Component<FormProps> {
 
   private handleOnChangeText(formField: FormField): ((text: string) => void) & Function {
     return (value: string) => {
+      const state = { ...this.state, [formField.fieldName]: value }
+      this.props.handleOnChange(state);
       this.setState({ [formField.fieldName]: value })
-      this.props.handleOnChange(this.state);
     };
   }
 
@@ -67,11 +68,6 @@ class Form extends React.Component<FormProps> {
             onChangeText={this.handleOnChangeText(formField)}
           />
         ))}
-
-        {/* <FAB
-          style={styles.fab}
-          icon="check"
-          onPress={this.handleOnPress} /> */}
       </>
     );
   }
