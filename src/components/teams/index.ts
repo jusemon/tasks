@@ -1,11 +1,11 @@
 import { createStackNavigator } from "react-navigation-stack";
 
 import { theme } from "../../shared/theme";
-import TasksScreen from "./Tasks";
+import TeamsScreen from "./Teams";
 import ProfileScreen from "../profile";
 
-export const TasksStack = createStackNavigator({
-  Home: TasksScreen,
+export const TeamsStack = createStackNavigator({
+  Home: TeamsScreen,
   Profile: ProfileScreen
 }, {
   defaultNavigationOptions: {
@@ -16,7 +16,7 @@ export const TasksStack = createStackNavigator({
   }
 });
 
-TasksStack.navigationOptions = ({ navigation }) => {
+TeamsStack.navigationOptions = ({ navigation }) => {
   let tabBarVisible = true;
   if (navigation.state.index > 0) {
     tabBarVisible = false;
@@ -27,4 +27,4 @@ TasksStack.navigationOptions = ({ navigation }) => {
   };
 };
 
-export default TasksStack;
+export default TeamsStack;

@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { ThemePropBase } from '../../shared/base/types';
+import { ProfileButton } from '../profile/Profile';
 
 const style = ({ colors }: Theme) => StyleSheet.create({
   container: {
@@ -13,8 +14,11 @@ const style = ({ colors }: Theme) => StyleSheet.create({
 });
 
 export class Projects extends React.Component<ThemePropBase> {
-  static navigationOptions = {
-    title: 'Projects'
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Projects',
+      headerLeft: () => <ProfileButton navigation={navigation} />
+    }
   }
 
   render() {

@@ -1,9 +1,12 @@
-import ProjectsScreen from "./Projects";
 import { createStackNavigator } from "react-navigation-stack";
+
 import { theme } from "../../shared/theme";
+import ProjectsScreen from "./Projects";
+import ProfileScreen from "../profile";
 
 export const ProjectsStack = createStackNavigator({
-  Home: ProjectsScreen
+  Home: ProjectsScreen,
+  Profile: ProfileScreen
 }, {
   defaultNavigationOptions: {
     headerStyle: {

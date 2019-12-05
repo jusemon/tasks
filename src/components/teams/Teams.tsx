@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, withTheme, Theme } from 'react-native-paper';
 import { View, StyleSheet } from 'react-native';
 import { ThemePropBase } from '../../shared/base/types';
+import { ProfileButton } from '../profile/Profile';
 
 const style = ({ colors }: Theme) => StyleSheet.create({
   container: {
@@ -13,8 +14,11 @@ const style = ({ colors }: Theme) => StyleSheet.create({
 });
 
 export class Teams extends React.Component<ThemePropBase> {
-  static navigationOptions = {
-    title: 'Teams'
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Teams',
+      headerLeft: () => <ProfileButton navigation={navigation} />
+    }
   }
 
   render() {
