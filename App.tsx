@@ -3,6 +3,7 @@ import { createAppContainer, createSwitchNavigator, NavigationContainerComponent
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { createStackNavigator } from 'react-navigation-stack';
 
 import './src/shared/firebase/timeout';
 import { theme } from './src/shared/theme';
@@ -13,7 +14,6 @@ import AuthStack from './src/components/auth';
 import AuthLoadingScreen from './src/components/auth/AuthLoading';
 import firebaseApp from './src/shared/firebase';
 import { getActiveRouteName } from './src/shared/navigation';
-import { createStackNavigator } from 'react-navigation-stack';
 import Select from './src/shared/components/Select';
 
 const AppBottomTab = createMaterialBottomTabNavigator(

@@ -10,15 +10,17 @@ interface TeamItemProps {
 
 export default class TeamItem extends React.Component<TeamItemProps> {
   render() {
+    const { team, onEdit, onDelete } = this.props;
+    const disabled = team.projects && Object.values(team.projects).some(v => v);
     return (
       <Card style={{ margin: 10, marginBottom: 0 }}>
         <Card.Content>
-          <Title>{this.props.team.name}</Title>
-          <Paragraph>{this.props.team.description}</Paragraph>
+          <Title>{team.name}</Title>
+          <Paragraph>{team.description}</Paragraph>
         </Card.Content>
         <Card.Actions>
-          <Button onPress={() => this.props.onDelete(this.props.team.id)}>Delete</Button>
-          <Button onPress={() => this.props.onEdit(this.props.team.id)}>Edit</Button>
+          <Button disabled={disabled} onPress={() => onDelete(team.id)}>Delete</Button>
+          <Button onPress={() => onEdit(this.props.team.id)}>Edit</Button>
         </Card.Actions>
       </Card>
     );

@@ -22,7 +22,7 @@ interface TeamsListProps extends ThemePropBase, NavigationPropBase { }
 
 export default class TeamsList extends React.Component<TeamsListProps, TeamsListState> {
   onValueChange: any;
-  state = {
+  state: TeamsListState = {
     teams: [],
     visible: false,
     id: null
@@ -43,7 +43,11 @@ export default class TeamsList extends React.Component<TeamsListProps, TeamsList
   private onEdit = (id: string) => this.props.navigation.navigate('TeamForm', { ...this.state.teams.find(team => team.id === id) });
 
   private onDelete = () => {
-    firebaseApp.database().ref(`teams/${this.state.id}`).remove();
+    const { teams, id } = this.state;
+    const team = teams.find(team => team.id == id);
+    if (Object.values(team.projects || {}).every(v => !v)) {
+      firebaseApp.database().ref(`teams/${id}`).remove();
+    }
     this.hideDeleteDialog();
   }
 

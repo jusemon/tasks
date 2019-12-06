@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, RecyclerViewBackedScrollViewComponent } from "react-native";
 import { withTheme, Theme, FAB } from "react-native-paper";
 
 import Form, { FormField, FormFieldType } from "../../shared/components/Form";
@@ -10,7 +10,8 @@ import { Team } from "../teams/model";
 
 interface ProjectFormState {
   formFields: Array<FormField>;
-  result: Project;
+  project: Project;
+  projectOld?: Project;
 }
 interface ProjectFormProps extends ThemePropBase, NavigationPropBase { }
 
@@ -29,7 +30,7 @@ const style = ({ colors }: Theme) => StyleSheet.create({
 });
 
 export class ProjectForm extends React.Component<ProjectFormProps, ProjectFormState> {
-  state = {
+  state: ProjectFormState = {
     formFields: [{
       fieldName: 'name',
       label: 'Name',
@@ -48,12 +49,13 @@ export class ProjectForm extends React.Component<ProjectFormProps, ProjectFormSt
       type: FormFieldType.List,
       items: [],
       secureTextEntry: false,
-      defaultValue: this.props.navigation.getParam('team', '')
+      defaultValue: this.props.navigation.getParam('team', { label: '' })
     }],
-    result: {
+    project: {
       name: this.props.navigation.getParam('name', ''),
       description: this.props.navigation.getParam('description', ''),
-      team: this.props.navigation.getParam('team', '')
+      teamId: this.props.navigation.getParam('teamId', ''),
+      team: null
     }
   };
 
@@ -61,22 +63,33 @@ export class ProjectForm extends React.Component<ProjectFormProps, ProjectFormSt
     firebaseApp.database().ref('teams').once('value', (values) => {
       const obj = values.val();
       const teams = Object.keys(obj).map<Team>((id) => ({ ...obj[id], id }));
-      const formField = this.state.formFields.find(formField => formField.fieldName == 'team');
-      formField.items = teams.map(team => ({ label: team.name, value: team }));
+      const formFieldTeam = this.state.formFields.find(formField => formField.fieldName == 'team');
+      formFieldTeam.items = teams.map(team => ({ label: team.name, value: team }));
+      teams.find(team => team.name);
     });
+    this.setState({ projectOld: { ...this.state.project } });
   }
 
-  handleOnChange = (result: any) => {
-    this.setState({ result: result })
+  handleOnChange = (project: Project) => {
+    if (project.team.value) {
+      project.teamId = project.team.value.id;
+    }
+    this.setState({ project });
   }
 
   handleOnPress = () => {
     const id = this.props.navigation.getParam('id', null);
-    if (id !== null) {
-      firebaseApp.database().ref(`projects/${id}`).update(this.state.result);
-    } else {
-      firebaseApp.database().ref('projects').push(this.state.result);
+    const { project, projectOld } = this.state;
+    delete project.team.value;
+    const isEditing = id !== null;
+    const key = isEditing ? id : firebaseApp.database().ref().child('projects').push().key;
+    const updates = {};
+    updates[`/projects/${key}`] = project;
+    updates[`/teams/${project.teamId}/projects/${key}`] = true;
+    if (isEditing && project.teamId !== projectOld.teamId) {
+      updates[`/teams/${projectOld.teamId}/projects/${key}`] = false;
     }
+    firebaseApp.database().ref().update(updates);
     this.props.navigation.goBack();
   }
 

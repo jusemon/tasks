@@ -22,7 +22,7 @@ interface TasksListProps extends ThemePropBase, NavigationPropBase { }
 
 export default class TasksList extends React.Component<TasksListProps, TasksListState> {
   onValueChange: any;
-  state = {
+  state: TasksListState = {
     tasks: [],
     visible: false,
     id: null

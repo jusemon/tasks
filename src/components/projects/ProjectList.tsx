@@ -22,7 +22,7 @@ interface ProjectsListProps extends ThemePropBase, NavigationPropBase { }
 
 export default class ProjectsList extends React.Component<ProjectsListProps, ProjectsListState> {
   onValueChange: any;
-  state = {
+  state: ProjectsListState = {
     projects: [],
     visible: false,
     id: null

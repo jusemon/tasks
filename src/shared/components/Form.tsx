@@ -25,7 +25,7 @@ export interface FormResult {
 
 export interface FormProps extends ThemePropBase, NavigationPropBase {
   formFields: Array<FormField>;
-  handleOnChange: (form: FormResult) => any;
+  handleOnChange: (form: any) => any;
 }
 
 const style = ({ colors }: Theme) => StyleSheet.create({
@@ -61,17 +61,18 @@ class Form extends React.Component<FormProps> {
     this.state = this.props.formFields.reduce((output, input) => ({ ...output, [input.fieldName]: input.defaultValue }), {});
   }
 
-  private handleOnChangeSelect(formField: FormField): ((value: SelectItem<any>) => void) & Function {
-    return (value: SelectItem<any>) => {
-      const state = { ...this.state, [formField.fieldName]: value }
-      this.props.handleOnChange(state);
-      this.setState({ [formField.fieldName]: value })
+  private handleOnChangeSelect(formField: FormField) {
+    return () => {
+      this.props.navigation.navigate("Select", {
+        items: formField.items,
+        handleOnSelect: (text: string) => { this.handleOnChangeText(formField)(text); }
+      });
     };
   }
 
   private handleOnChangeText(formField: FormField): ((text: string) => void) & Function {
     return (value: string) => {
-      const state = { ...this.state, [formField.fieldName]: value }
+      const state = { ...this.state, [formField.fieldName]: value } as any;
       this.props.handleOnChange(state);
       this.setState({ [formField.fieldName]: value })
     };
@@ -87,13 +88,7 @@ class Form extends React.Component<FormProps> {
               return (
                 <TouchableHighlight
                   key={formField.fieldName}
-                  onPress={() => {
-                    this.props.navigation.navigate("Select",
-                      {
-                        items: formField.items,
-                        handleOnSelect: (text: string) => { this.handleOnChangeText(formField)(text); }
-                      })
-                  }}>
+                  onPress={this.handleOnChangeSelect(formField)}>
                   <TextInput
                     label={formField.label}
                     style={styles.textInput}
