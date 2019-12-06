@@ -30,11 +30,9 @@ export default class ProjectsList extends React.Component<ProjectsListProps, Pro
 
   componentWillMount() {
     this.onValueChange = firebaseApp.database().ref('projects').on('value', (values) => {
-      const list: Array<any> = [];
-      values.forEach(value => {
-        list.push({ ...value.val(), id: value.key });
-      });
-      this.setState({ projects: list });
+      const obj = values.val() || {};
+      const projects = Object.keys(obj).map<Project>((id) => ({ ...obj[id], id }));
+      this.setState({ projects });
     });
   }
 

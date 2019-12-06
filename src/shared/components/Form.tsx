@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Picker } from 'react-native';
+import { StyleSheet, TouchableHighlight } from 'react-native';
 import { TextInput, Theme } from 'react-native-paper';
 import { ThemePropBase, NavigationPropBase } from '../base/types';
 import { withNavigation } from 'react-navigation';
@@ -85,29 +85,24 @@ class Form extends React.Component<FormProps> {
           switch (formField.type) {
             case FormFieldType.List:
               return (
-                <TextInput
+                <TouchableHighlight
                   key={formField.fieldName}
-                  label={formField.label}
-                  style={styles.textInput}
-                  theme={theme.textInput}
-                  value={this.state[formField.fieldName].label}
-                  secureTextEntry={formField.secureTextEntry}
-                  onFocus={() => {
-                    this.props.navigation.navigate("Select", 
-                    { 
-                      items: formField.items, 
-                      handleOnSelect: (text: string) => { this.handleOnChangeText(formField)(text); }
-                    })
-                  }}
-                />
-                // <Picker
-                //   key={formField.fieldName}
-                //   style={styles.picker}
-                //   selectedValue={this.state[formField.fieldName]}
-                //   mode="dialog"
-                //   onValueChange={this.handleOnChangeText(formField)}>
-                //     {formField.items.map(item=>(<Picker.Item key={item.value} label={item.label} value={item.value} />))}
-                // </Picker>
+                  onPress={() => {
+                    this.props.navigation.navigate("Select",
+                      {
+                        items: formField.items,
+                        handleOnSelect: (text: string) => { this.handleOnChangeText(formField)(text); }
+                      })
+                  }}>
+                  <TextInput
+                    label={formField.label}
+                    style={styles.textInput}
+                    theme={theme.textInput}
+                    value={this.state[formField.fieldName].label}
+                    secureTextEntry={formField.secureTextEntry}
+                    editable={false}
+                  />
+                </TouchableHighlight>
               )
             case FormFieldType.Text:
             default:

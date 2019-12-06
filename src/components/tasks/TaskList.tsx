@@ -30,11 +30,9 @@ export default class TasksList extends React.Component<TasksListProps, TasksList
 
   componentWillMount() {
     this.onValueChange = firebaseApp.database().ref('tasks').on('value', (values) => {
-      const list: Array<any> = [];
-      values.forEach(value => {
-        list.push({ ...value.val(), id: value.key });
-      });
-      this.setState({ tasks: list });
+      const obj = values.val() || {};
+      const tasks = Object.keys(obj).map<Task>((id) => ({ ...obj[id], id }));
+      this.setState({ tasks });
     });
   }
 

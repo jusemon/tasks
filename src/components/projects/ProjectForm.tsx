@@ -59,12 +59,10 @@ export class ProjectForm extends React.Component<ProjectFormProps, ProjectFormSt
 
   componentWillMount() {
     firebaseApp.database().ref('teams').once('value', (values) => {
-      const teams: Array<Team> = [];
-      values.forEach(value => {
-        teams.push({ ...value.val(), id: value.key });
-      });
+      const obj = values.val();
+      const teams = Object.keys(obj).map<Team>((id) => ({ ...obj[id], id }));
       const formField = this.state.formFields.find(formField => formField.fieldName == 'team');
-      formField.items = teams.map(team => ({ label: team.name, value: team }));      
+      formField.items = teams.map(team => ({ label: team.name, value: team }));
     });
   }
 

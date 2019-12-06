@@ -30,11 +30,9 @@ export default class TeamsList extends React.Component<TeamsListProps, TeamsList
 
   componentWillMount() {
     this.onValueChange = firebaseApp.database().ref('teams').on('value', (values) => {
-      const list: Array<any> = [];
-      values.forEach(value => {
-        list.push({ ...value.val(), id: value.key });
-      });
-      this.setState({ teams: list });
+      const obj = values.val() || {};
+      const teams = Object.keys(obj).map<Team>((id) => ({ ...obj[id], id }));
+      this.setState({ teams });
     });
   }
 

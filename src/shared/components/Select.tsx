@@ -1,7 +1,7 @@
 import React from 'react';
 import Constants from 'expo-constants';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { Theme, Searchbar, Button, withTheme } from 'react-native-paper';
+import { StyleSheet, View, ScrollView, TouchableHighlight, Text } from 'react-native';
+import { Theme, Searchbar, withTheme } from 'react-native-paper';
 import { ThemePropBase, NavigationPropBase } from '../base/types';
 
 export interface SelectItem<T> {
@@ -17,32 +17,37 @@ export interface SelectState<T> {
 }
 
 const style = ({ colors }: Theme) => StyleSheet.create({
+  statusBar: {
+    height: Constants.statusBarHeight,
+    backgroundColor: colors.primary
+  },
   container: {
-    marginTop: Constants.statusBarHeight,
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    backgroundColor: colors.background
-  },
-  textInput: {
-    backgroundColor: colors.primary
-  },
-  picker: {
-    borderBottomColor: '#000',
-    color: '#fff'
+    backgroundColor: colors.primary,
+    paddingLeft: 10,
+    paddingRight: 10
   },
   scroll: {
-    backgroundColor: colors.background
+    backgroundColor: colors.primary,
   },
   firstItem: {
-    borderTopColor: '#aaa',
-    borderTopWidth: 1
+    borderTopColor: '#333',
+    borderTopWidth: .7,
+    borderBottomColor: '#333',
+    borderBottomWidth: .7
   },
   item: {
-    borderTopColor: '#aaa',
-    borderTopWidth: 1,
-    borderBottomColor: '#aaa',
-    borderBottomWidth: 1
+    borderBottomColor: '#333',
+    borderBottomWidth: .7
+  },
+  itemText: {
+    color: '#fff',
+    textAlign: "left",
+    textAlignVertical: "center",
+    minHeight: 50,
+    fontSize: 16
   }
 });
 
@@ -67,22 +72,23 @@ class Select<T> extends React.Component<SelectProps, SelectState<T>> {
   render() {
     const styles = style(this.props.theme);
     return (
-      <View style={styles.container}>
-        <Searchbar
-          placeholder="Search"
-          onChangeText={this.handleOnChangeTextSearch}
-          value={this.state.query}
-        />
-        <ScrollView style={styles.scroll}>
-          {this.state.items.map((item, index) => (
-            <View key={index} style={index == 0 ? styles.firstItem : styles.item}>
-              <Button mode="text" onPress={this.handleOnPress(item)}>
-                {item.label}
-              </Button>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
+      <>
+        <View style={styles.statusBar}></View>
+        <View style={styles.container}>
+          <Searchbar
+            placeholder="Search"
+            onChangeText={this.handleOnChangeTextSearch}
+            value={this.state.query}
+          />
+          <ScrollView style={styles.scroll}>
+            {this.state.items.map((item, index) => (
+              <TouchableHighlight onPress={this.handleOnPress(item)} key={index} style={index == 0 ? styles.firstItem : styles.item}>
+                <Text style={styles.itemText}>{item.label}</Text>
+              </TouchableHighlight>
+            ))}
+          </ScrollView>
+        </View>
+      </>
     );
   }
 }
