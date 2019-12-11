@@ -4,12 +4,13 @@ import { NavigationPropBase } from '../../shared/base/types';
 import firebaseApp from '../../shared/firebase';
 
 export default class AuthLoadingScreen extends React.Component<NavigationPropBase> {
+
   componentDidMount() {
-    this._bootstrapAsync();
+    this.bootstrapAsync();
   }
 
   // Fetch the token from storage then navigate to our appropriate place
-  _bootstrapAsync = async () => {
+  private bootstrapAsync = async () => {
     const userToken = await AsyncStorage.getItem('userToken1');
     this.props.navigation.navigate(userToken ? 'App' : 'Auth');
     // This will switch to the App screen or Auth screen and this loading

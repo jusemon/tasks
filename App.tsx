@@ -67,9 +67,9 @@ export default class App extends React.Component {
   navigator: NavigationContainerComponent;
   currentRouteName: string;
   unsubscribe: firebase.Unsubscribe;
-  componentWillMount() {
+
+  componentDidMount() {
     this.unsubscribe = firebaseApp.auth().onAuthStateChanged((user) => {
-      console.log('current route:', this.currentRouteName);
       if (user == null) {
         this.navigator.dispatch(NavigationActions.navigate({ routeName: 'Auth' }));
       } else {
@@ -79,9 +79,11 @@ export default class App extends React.Component {
       }
     });
   }
+
   componentWillUnmount() {
     this.unsubscribe();
   }
+
   render() {
     return (
       <PaperProvider theme={theme}>

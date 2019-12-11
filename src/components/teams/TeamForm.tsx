@@ -51,7 +51,7 @@ export class TeamForm extends React.Component<TeamFormProps, TeamFormState> {
     }
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({ teamOld: { ...this.state.team } });
   }
 

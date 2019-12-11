@@ -28,7 +28,7 @@ export default class ProjectsList extends React.Component<ProjectsListProps, Pro
     id: null
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.onValueChange = firebaseApp.database().ref('projects').on('value', (values) => {
       const obj = values.val() || {};
       const projects = Object.keys(obj).map<Project>((id) => ({ ...obj[id], id }));
