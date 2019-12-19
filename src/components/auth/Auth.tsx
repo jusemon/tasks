@@ -45,18 +45,16 @@ const style = ({ colors }: Theme) => StyleSheet.create({
 
 class Auth extends React.Component<AuthProps, AuthState> {
 
-  state = {
+  state: AuthState = {
     formFields: [{
       fieldName: 'email',
       label: 'Email',
       type: FormFieldType.Text,
-      secureTextEntry: false,
       defaultValue: ''
     }, {
       fieldName: 'password',
       label: 'Password',
-      type: FormFieldType.Text,
-      secureTextEntry: true,
+      type: FormFieldType.Password,
       defaultValue: ''
     }]
   };

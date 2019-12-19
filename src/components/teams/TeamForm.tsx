@@ -35,13 +35,11 @@ export class TeamForm extends React.Component<TeamFormProps, TeamFormState> {
       fieldName: 'name',
       label: 'Name',
       type: FormFieldType.Text,
-      secureTextEntry: false,
       defaultValue: this.props.navigation.getParam('name', '')
     }, {
       fieldName: 'description',
       label: 'Description',
       type: FormFieldType.Text,
-      secureTextEntry: false,
       defaultValue: this.props.navigation.getParam('description', '')
     }],
     team: {

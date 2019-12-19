@@ -35,20 +35,17 @@ export class ProjectForm extends React.Component<ProjectFormProps, ProjectFormSt
       fieldName: 'name',
       label: 'Name',
       type: FormFieldType.Text,
-      secureTextEntry: false,
       defaultValue: this.props.navigation.getParam('name', '')
     }, {
       fieldName: 'description',
       label: 'Description',
       type: FormFieldType.Text,
-      secureTextEntry: false,
       defaultValue: this.props.navigation.getParam('description', '')
     }, {
       fieldName: 'team',
       label: 'Team',
       type: FormFieldType.List,
       items: [],
-      secureTextEntry: false,
       defaultValue: this.props.navigation.getParam('team', { label: '' })
     }],
     project: {

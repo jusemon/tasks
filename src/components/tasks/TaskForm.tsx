@@ -28,13 +28,29 @@ const style = ({ colors }: Theme) => StyleSheet.create({
 });
 
 export class TaskForm extends React.Component<TaskFormProps, TaskFormState> {
-  state = {
+  state: TaskFormState = {
     formFields: [{
       fieldName: 'name',
       label: 'Name',
       type: FormFieldType.Text,
-      secureTextEntry: false,
       defaultValue: this.props.navigation.getParam('name', '')
+    }, {
+      fieldName: 'team',
+      label: 'Team',
+      type: FormFieldType.List,
+      items: [],
+      defaultValue: this.props.navigation.getParam('team', { label: '' })
+    }, {
+      fieldName: 'project',
+      label: 'Project',
+      items: [],
+      type: FormFieldType.List,
+      defaultValue: this.props.navigation.getParam('project', { label: '' })
+    }, {
+      fieldName: 'startDate',
+      label: 'Start date',
+      type: FormFieldType.Text,
+      defaultValue: this.props.navigation.getParam('startDate', '')
     }],
     result: {
       name: this.props.navigation.getParam('name', '')

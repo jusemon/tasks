@@ -1,23 +1,41 @@
 import React from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { StyleSheet, TouchableHighlight } from 'react-native';
 import { TextInput, Theme } from 'react-native-paper';
-import { ThemePropBase, NavigationPropBase } from '../base/types';
 import { withNavigation } from 'react-navigation';
 import { SelectItem } from './Select';
+import { ThemePropBase, NavigationPropBase } from '../base/types';
 
 export enum FormFieldType {
-  'Text',
-  'List'
+  Text,
+  Password,
+  List,
+  DateTime
 }
 
-export interface FormField {
+interface FormFieldList {
   defaultValue: string | number;
   fieldName: string;
   label: string;
-  type: FormFieldType;
-  secureTextEntry: boolean;
-  items?: Array<SelectItem<any>>;
+  type: FormFieldType.List;
+  items: Array<SelectItem<any>>;
 };
+
+interface FormFieldText {
+  defaultValue: string | number;
+  fieldName: string;
+  label: string;
+  type: FormFieldType.Password | FormFieldType.Text;
+};
+
+interface FormFieldDateTime {
+  defaultValue: string | number;
+  fieldName: string;
+  label: string;
+  type: FormFieldType.DateTime;
+};
+
+export type FormField = FormFieldList | FormFieldText | FormFieldDateTime;
 
 export interface FormResult {
   [field: string]: string | number;
@@ -61,12 +79,21 @@ class Form extends React.Component<FormProps> {
     this.state = this.props.formFields.reduce((output, input) => ({ ...output, [input.fieldName]: input.defaultValue }), {});
   }
 
-  private handleOnChangeSelect(formField: FormField) {
+  private handleOnChangeSelect(formField: FormFieldList) {
     return () => {
       this.props.navigation.navigate("Select", {
         items: formField.items,
         handleOnSelect: (text: string) => { this.handleOnChangeText(formField)(text); }
       });
+    };
+  }
+
+  private handleOnChangeDateTimePicker(formField: FormFieldDateTime) {
+    return () => {
+      // this.props.navigation.navigate("Select", {
+      //   items: formField.items,
+      //   handleOnSelect: (text: string) => { this.handleOnChangeText(formField)(text); }
+      // });
     };
   }
 
@@ -94,11 +121,26 @@ class Form extends React.Component<FormProps> {
                     style={styles.textInput}
                     theme={theme.textInput}
                     value={this.state[formField.fieldName].label}
-                    secureTextEntry={formField.secureTextEntry}
                     editable={false}
                   />
                 </TouchableHighlight>
               )
+            case FormFieldType.DateTime:
+              return (
+                <TouchableHighlight
+                  key={formField.fieldName}
+                  onPress={this.handleOnChangeDateTimePicker(formField)}>
+                  <TextInput
+                    label={formField.label}
+                    style={styles.textInput}
+                    theme={theme.textInput}
+                    value={this.state[formField.fieldName]}
+                    editable={false}
+                  />
+                </TouchableHighlight>
+              )
+            case FormFieldType.Password:
+              const isPass = true;
             case FormFieldType.Text:
             default:
               return (
@@ -108,7 +150,7 @@ class Form extends React.Component<FormProps> {
                   style={styles.textInput}
                   theme={theme.textInput}
                   value={this.state[formField.fieldName]}
-                  secureTextEntry={formField.secureTextEntry}
+                  secureTextEntry={isPass}
                   onChangeText={this.handleOnChangeText(formField)}
                 />
               )

@@ -81,7 +81,7 @@ class Select<T> extends React.Component<SelectProps, SelectState<T>> {
             value={this.state.query}
           />
           <ScrollView style={styles.scroll}>
-            {this.state.items.map((item, index) => (
+            {this.state.items && this.state.items.map((item, index) => (
               <TouchableHighlight onPress={this.handleOnPress(item)} key={index} style={index == 0 ? styles.firstItem : styles.item}>
                 <Text style={styles.itemText}>{item.label}</Text>
               </TouchableHighlight>
