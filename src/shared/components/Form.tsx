@@ -1,10 +1,10 @@
-import React from 'react';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import React, { Fragment } from 'react';
 import { StyleSheet, TouchableHighlight } from 'react-native';
-import { TextInput, Theme } from 'react-native-paper';
+import { TextInput, Theme, Text } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { SelectItem } from './Select';
-import { ThemePropBase, NavigationPropBase } from '../base/types';
+import { ThemePropBase, NavigationPropBase } from '../base/types'
 
 export enum FormFieldType {
   Text,
@@ -33,6 +33,7 @@ interface FormFieldDateTime {
   fieldName: string;
   label: string;
   type: FormFieldType.DateTime;
+  mode: 'date' | 'time' | 'datetime';
 };
 
 export type FormField = FormFieldList | FormFieldText | FormFieldDateTime;
@@ -44,6 +45,15 @@ export interface FormResult {
 export interface FormProps extends ThemePropBase, NavigationPropBase {
   formFields: Array<FormField>;
   handleOnChange: (form: any) => any;
+}
+
+export interface FormState {
+  form: {
+    [key: string]: any
+  };
+  dateTimes: {
+    [key: string]: boolean
+  };
 }
 
 const style = ({ colors }: Theme) => StyleSheet.create({
@@ -72,11 +82,18 @@ const theme = {
   }
 }
 
-class Form extends React.Component<FormProps> {
+class Form extends React.Component<FormProps, FormState> {
   static defaultProps = { formFields: [] };
   constructor(props: FormProps) {
     super(props);
-    this.state = this.props.formFields.reduce((output, input) => ({ ...output, [input.fieldName]: input.defaultValue }), {});
+    this.state = {
+      form: this.props.formFields.reduce((output, input) => ({
+        ...output, [input.fieldName]: input.defaultValue
+      }), {}),
+      dateTimes: this.props.formFields.filter(o => o.type === FormFieldType.DateTime).reduce((output, input) => ({
+        ...output, [input.fieldName]: false
+      }), {}),
+    };
   }
 
   private handleOnChangeSelect(formField: FormFieldList) {
@@ -88,25 +105,39 @@ class Form extends React.Component<FormProps> {
     };
   }
 
-  private handleOnChangeDateTimePicker(formField: FormFieldDateTime) {
-    return () => {
-      // this.props.navigation.navigate("Select", {
-      //   items: formField.items,
-      //   handleOnSelect: (text: string) => { this.handleOnChangeText(formField)(text); }
-      // });
+  private handleOnConfirmDateTimePicker(formField: FormFieldDateTime): (e: any, date?: Date) => void {
+    return (e, date) => {
+      const { dateTimes } = this.state;
+      dateTimes[formField.fieldName] = !dateTimes[formField.fieldName];
+      if (date) {
+        this.handleOnChangeText(formField, dateTimes)(date.toLocaleDateString());
+      } else {
+        this.setState({ dateTimes });
+      }
     };
   }
 
-  private handleOnChangeText(formField: FormField): ((text: string) => void) & Function {
+  private handleOnChangeDateTimePicker(formField: FormFieldDateTime) {
+    return () => {
+      const { dateTimes } = this.state;
+      dateTimes[formField.fieldName] = !dateTimes[formField.fieldName];
+      this.setState({ dateTimes });
+    };
+  }
+
+  private handleOnChangeText(formField: FormField, dateTimes?: { [key: string]: boolean }): ((text: string) => void) & Function {
     return (value: string) => {
-      const state = { ...this.state, [formField.fieldName]: value } as any;
-      this.props.handleOnChange(state);
-      this.setState({ [formField.fieldName]: value })
+      const { form, dateTimes: oldDateTimes } = this.state;
+      form[formField.fieldName] = value;
+      const newForm = { ...form } as any;
+      this.props.handleOnChange(newForm);
+      this.setState({ form: newForm, dateTimes: dateTimes || oldDateTimes });
     };
   }
 
   render() {
     const styles = style(this.props.theme);
+    const { form, dateTimes } = this.state;
     return (
       <>
         {this.props.formFields.map((formField: FormField) => {
@@ -120,24 +151,32 @@ class Form extends React.Component<FormProps> {
                     label={formField.label}
                     style={styles.textInput}
                     theme={theme.textInput}
-                    value={this.state[formField.fieldName].label}
+                    value={form[formField.fieldName].label}
                     editable={false}
                   />
                 </TouchableHighlight>
               )
             case FormFieldType.DateTime:
               return (
-                <TouchableHighlight
-                  key={formField.fieldName}
-                  onPress={this.handleOnChangeDateTimePicker(formField)}>
-                  <TextInput
-                    label={formField.label}
-                    style={styles.textInput}
-                    theme={theme.textInput}
-                    value={this.state[formField.fieldName]}
-                    editable={false}
-                  />
-                </TouchableHighlight>
+                <Fragment key={formField.fieldName}>
+                  <TouchableHighlight
+                    onPress={this.handleOnChangeDateTimePicker(formField)}>
+                    <TextInput
+                      label={formField.label}
+                      style={styles.textInput}
+                      theme={theme.textInput}
+                      value={form[formField.fieldName]}
+                      editable={false}
+                    />
+                  </TouchableHighlight>
+                  {dateTimes[formField.fieldName] &&
+                    <DateTimePicker
+                      mode={formField.mode}
+                      value={new Date(form[formField.fieldName])}
+                      onChange={this.handleOnConfirmDateTimePicker(formField)}
+                    />
+                  }
+                </Fragment>
               )
             case FormFieldType.Password:
               const isPass = true;
@@ -149,14 +188,13 @@ class Form extends React.Component<FormProps> {
                   label={formField.label}
                   style={styles.textInput}
                   theme={theme.textInput}
-                  value={this.state[formField.fieldName]}
+                  value={form[formField.fieldName]}
                   secureTextEntry={isPass}
                   onChangeText={this.handleOnChangeText(formField)}
                 />
               )
           }
-        }
-        )}
+        })}
       </>
     );
   }

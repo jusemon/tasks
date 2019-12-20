@@ -49,8 +49,9 @@ export class TaskForm extends React.Component<TaskFormProps, TaskFormState> {
     }, {
       fieldName: 'startDate',
       label: 'Start date',
-      type: FormFieldType.Text,
-      defaultValue: this.props.navigation.getParam('startDate', '')
+      type: FormFieldType.DateTime,
+      defaultValue: this.props.navigation.getParam('startDate', (new Date()).toLocaleDateString()),
+      mode: "date"
     }],
     result: {
       name: this.props.navigation.getParam('name', '')
