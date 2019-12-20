@@ -61,8 +61,9 @@ export class ProjectForm extends React.Component<ProjectFormProps, ProjectFormSt
       const obj = values.val();
       const teams = Object.keys(obj).map<Team>((id) => ({ ...obj[id], id }));
       const formFieldTeam = this.state.formFields.find(formField => formField.fieldName == 'team');
-      formFieldTeam.items = teams.map(team => ({ label: team.name, value: team }));
-      teams.find(team => team.name);
+      if (formFieldTeam.type == FormFieldType.List) { 
+        formFieldTeam.items = teams.map(team => ({ label: team.name, value: team })); 
+      }
     });
     this.setState({ projectOld: { ...this.state.project } });
   }

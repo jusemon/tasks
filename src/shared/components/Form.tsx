@@ -14,11 +14,12 @@ export enum FormFieldType {
 }
 
 interface FormFieldList {
-  defaultValue: string | number;
+  defaultValue: SelectItem<any>;
   fieldName: string;
   label: string;
   type: FormFieldType.List;
   items: Array<SelectItem<any>>;
+  callback?: (next: SelectItem<any>, previous?: SelectItem<any>) => void;
 };
 
 interface FormFieldText {
@@ -82,7 +83,7 @@ const theme = {
   }
 }
 
-class Form extends React.Component<FormProps, FormState> {
+export class Form extends React.Component<FormProps, FormState> {
   static defaultProps = { formFields: [] };
   constructor(props: FormProps) {
     super(props);
@@ -100,7 +101,13 @@ class Form extends React.Component<FormProps, FormState> {
     return () => {
       this.props.navigation.navigate("Select", {
         items: formField.items,
-        handleOnSelect: (text: string) => { this.handleOnChangeText(formField)(text); }
+        handleOnSelect: (value: SelectItem<any>) => {
+          if (formField.callback) {
+            console.log('Calling callback');
+            formField.callback(value, {...this.state.form[formField.fieldName]});
+          }
+          this.handleOnChangeText(formField)(value);
+        }
       });
     };
   }
@@ -125,10 +132,14 @@ class Form extends React.Component<FormProps, FormState> {
     };
   }
 
-  private handleOnChangeText(formField: FormField, dateTimes?: { [key: string]: boolean }): ((text: string) => void) & Function {
-    return (value: string) => {
+  public handleOnChangeText(formField: FormField, dateTimes?: { [key: string]: boolean }): ((value: string | number | SelectItem<any>) => void) & Function {
+    return (value: string | number | SelectItem<any>) => {
+      console.log('Changing Text', formField.fieldName, value);
       const { form, dateTimes: oldDateTimes } = this.state;
-      form[formField.fieldName] = value;
+      if(form[formField.fieldName] === value) {
+        return;
+      }
+      form[formField.fieldName] = value
       const newForm = { ...form } as any;
       this.props.handleOnChange(newForm);
       this.setState({ form: newForm, dateTimes: dateTimes || oldDateTimes });
@@ -172,7 +183,7 @@ class Form extends React.Component<FormProps, FormState> {
                   {dateTimes[formField.fieldName] &&
                     <DateTimePicker
                       mode={formField.mode}
-                      value={new Date(form[formField.fieldName])}
+                      value={new Date(form[formField.fieldName] || new Date())}
                       onChange={this.handleOnConfirmDateTimePicker(formField)}
                     />
                   }
